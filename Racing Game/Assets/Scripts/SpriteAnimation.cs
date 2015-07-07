@@ -12,6 +12,8 @@ public class SpriteAnimation : MonoBehaviour
 	public float animTime = 0.0f;
 	public float fps = 10.0f;
 
+	public bool explode = false;
+
 	private Vector2 framePosition;
 	private Vector2 frameSize;
 	private Vector2 frameOffset;
@@ -70,11 +72,26 @@ public class SpriteAnimation : MonoBehaviour
 		if (carVelocity > 0.1f) 
 		{
 			currentAnim = animDrive;
+			if(Input.GetAxis("Horizontal") < 0)
+			{
+				currentAnim = animDriveLeft;
+			}
+			if(Input.GetAxis("Horizontal") > 0)
+			{
+				currentAnim = animDriveRight;
+			}
 		} 
-		else 
+		if (carVelocity < 0.1f) 
 		{
 			currentAnim = animIdle;
 		}
+
+		if (explode)
+		{
+			currentAnim = animexlosion;
+		}
+
+
 	}
 
 	void PlayAnimation()
@@ -84,6 +101,15 @@ public class SpriteAnimation : MonoBehaviour
 		{
 			currentFrame += 1;
 			animTime += 1.0f / fps;
+		}
+		//one-off animations
+		if (currentAnim == animexlosion)
+		{
+			currentFrame = Mathf.Clamp(currentFrame, explosionMin, explosionMax + 1);
+			if(currentFrame > explosionMax)
+			{
+				explode = false;
+			}
 		}
 
 		//looping animations
@@ -98,6 +124,24 @@ public class SpriteAnimation : MonoBehaviour
 			if(currentFrame > driveMax)
 			{
 				currentFrame = driveMin;
+			}
+		}
+
+		if (currentAnim == animDriveLeft)
+		{
+			currentFrame = Mathf.Clamp(currentFrame, driveLeftMin, driveLeftMax + 1);
+			if(currentFrame > driveLeftMax)
+			{
+				currentFrame = driveLeftMin;
+			}
+		}
+
+		if (currentAnim == animDriveRight)
+		{
+			currentFrame = Mathf.Clamp(currentFrame, driveRightMin, driveRightMax + 1);
+			if(currentFrame > driveRightMax)
+			{
+				currentFrame = driveRightMin;
 			}
 		}
 
