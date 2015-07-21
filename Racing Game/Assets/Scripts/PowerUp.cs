@@ -27,26 +27,48 @@ public class PowerUp : MonoBehaviour
 
 	void OnTriggerEnter(Collider other)
 	{
+		PlayerProperties playerProperties = playerGameObject.GetComponent<PlayerProperties>();
 		if (other.tag == "Player")
 		{
 			Debug.Log("We have a poerup !");
-			ApplyPowerUp();
+			ApplyPowerUp(playerProperties);
 		}
 	}
 
-	void ApplyPowerUp()
+	public int ApplyPowerUp(PlayerProperties playerStatus)
 	{
 		switch (powerUpType) 
 		{
 		case PowerType.Projectile :
-			Debug.Log("We have a projectile!");
+			if(playerStatus.playerState == PlayerProperties.PlayerState.CarNormal)
+			{
+				Debug.Log("We have a projectile!");
+				playerStatus.playerState = PlayerProperties.PlayerState.CarProjectile;
+				playerStatus.hasProjectile = true;
+				playerStatus.changeState = true;
+			}
 			break;
+
 		case PowerType.Trap :
-			Debug.Log("We have a trap!");
+			if(playerStatus.playerState == PlayerProperties.PlayerState.CarNormal)
+			{
+				Debug.Log("We have a trap!");
+				playerStatus.playerState = PlayerProperties.PlayerState.CarTrap;
+				playerStatus.hasTrap = true;
+				playerStatus.changeState = true;
+			}
 			break;
+
 		case PowerType.Boost :
-			Debug.Log("We have a boost!");
+			if(playerStatus.playerState == PlayerProperties.PlayerState.CarNormal)
+			{
+				Debug.Log("We have a boost!");
+				playerStatus.playerState = PlayerProperties.PlayerState.CarBoost;
+				playerStatus.hasBoost = true;
+				playerStatus.changeState = true;
+			}
 			break;
 		}
+		return (int)powerUpType;
 	}
 }
